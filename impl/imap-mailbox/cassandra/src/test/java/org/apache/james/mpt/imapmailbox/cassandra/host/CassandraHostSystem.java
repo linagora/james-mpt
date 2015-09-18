@@ -36,6 +36,7 @@ import org.apache.james.mailbox.store.JVMMailboxPathLocker;
 import org.apache.james.mailbox.store.MockAuthenticator;
 import org.apache.james.mailbox.store.StoreSubscriptionManager;
 import org.apache.james.mailbox.store.quota.DefaultQuotaRootResolver;
+import org.apache.james.mailbox.store.quota.ListeningCurrentQuotaUpdater;
 import org.apache.james.mailbox.store.quota.StoreQuotaManager;
 import org.apache.james.mpt.host.JamesImapHostSystem;
 import org.apache.james.mpt.imapmailbox.MailboxCreationDelegate;
@@ -78,6 +79,10 @@ public class CassandraHostSystem extends JamesImapHostSystem {
         mailboxManager.setQuotaUpdater(quotaUpdater);
 
         mailboxManager.init();
+        ListeningCurrentQuotaUpdater quotaUpdater = new ListeningCurrentQuotaUpdater();
+        quotaUpdater.setCurrentQuotaManager(currentQuotaManager);
+        quotaUpdater.setQuotaRootResolver(quotaRootResolver);
+        mailboxManager.addGlobalListener(quotaUpdater, null);
 
         SubscriptionManager subscriptionManager = new StoreSubscriptionManager(mapperFactory);
 

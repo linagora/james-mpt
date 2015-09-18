@@ -39,6 +39,7 @@ import org.apache.james.mailbox.store.StoreMailboxManager;
 import org.apache.james.mailbox.store.StoreSubscriptionManager;
 import org.apache.james.mailbox.store.quota.CurrentQuotaCalculator;
 import org.apache.james.mailbox.store.quota.DefaultQuotaRootResolver;
+import org.apache.james.mailbox.store.quota.ListeningCurrentQuotaUpdater;
 import org.apache.james.mailbox.store.quota.StoreQuotaManager;
 import org.apache.james.mpt.host.JamesImapHostSystem;
 import org.apache.james.mpt.imapmailbox.MailboxCreationDelegate;
@@ -96,6 +97,10 @@ public class InMemoryHostSystem extends JamesImapHostSystem {
         mailboxManager.setQuotaUpdater(quotaUpdater);
 
         mailboxManager.init();
+        ListeningCurrentQuotaUpdater quotaUpdater = new ListeningCurrentQuotaUpdater();
+        quotaUpdater.setCurrentQuotaManager(currentQuotaManager);
+        quotaUpdater.setQuotaRootResolver(quotaRootResolver);
+        mailboxManager.addGlobalListener(quotaUpdater, null);
 
         final ImapProcessor defaultImapProcessorFactory = DefaultImapProcessorFactory.createDefaultProcessor(mailboxManager, new StoreSubscriptionManager(factory), quotaManager, quotaRootResolver);
         configure(new DefaultImapDecoderFactory().buildImapDecoder(),
