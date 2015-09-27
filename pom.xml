@@ -193,6 +193,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.james</groupId>
+                <artifactId>apache-james-mailbox-hystrix</artifactId>
+                <version>${james-mailbox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
                 <artifactId>apache-james-mailbox-jcr</artifactId>
                 <version>${james-mailbox.version}</version>
             </dependency>
